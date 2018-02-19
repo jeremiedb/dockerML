@@ -1,0 +1,19 @@
+docker build --rm . -t fullkit
+docker tag fullkit:latest jeremiedb/fullkit:latest
+docker push jeremiedb/fullkit:latest
+
+# delete none images
+docker images --quiet --filter=dangling=true | xargs --no-run-if-empty docker rmi -f
+
+docker run -it --rm -p 8004:8004 -v c:/Users/Jeremie/Documents/Kaggle:/Kaggle fullkit
+http://localhost:8004/rstudio
+opencpu:opencpu
+
+## If not using -rm optins, image persists and can be save: 
+docker commit ed9e9df87411 fullkit:tag
+
+## remove untagged images
+docker rmi $(docker images -q --filter "dangling=true") -f
+docker rmi -f $(docker images | grep "<none>" | awk "{print \$3}")
+sudo docker rmi $(sudo docker images --filter "dangling=true" -q --no-trunc)
+sudo docker system prune -a
