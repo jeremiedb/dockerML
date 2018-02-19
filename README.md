@@ -3,6 +3,8 @@ dockerML
 
 > Dockerfiles for ML projects
 
+Images available at <https://hub.docker.com/r/jeremiedb/dockerml/>
+
 Libraries:
 
 -   MXNet built with MKL DNN
