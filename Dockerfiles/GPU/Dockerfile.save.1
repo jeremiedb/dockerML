@@ -39,15 +39,14 @@ RUN apt-get install -y libjemalloc-dev google-perftools
 
 RUN git clone --recursive https://github.com/apache/incubator-mxnet && \
 	cd incubator-mxnet && \
-	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_MKLDNN=0 USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1
+	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_MKLDNN=1 USE_CUDA=1 USE_CUDA_PATH=/usr/local/cuda USE_CUDNN=1
 
-#RUN ln -s /incubator-mxnet/lib/libmklml_intel.so /lib/libmklml_intel.so && \
-#	ln -s /incubator-mxnet/lib/libiomp5.so /lib/libiomp5.so && \
-#	ln -s /incubator-mxnet/lib/libmklml_gnu.so /lib/libmklml_gnu.so && \
-#	ln -s /incubator-mxnet/lib/libmkldnn.so /lib/libmkldnn.so && \
-#	ln -s /incubator-mxnet/lib/libmkldnn.so.0 /lib/libmkldnn.so.0
-
-RUN ln -s /usr/local/cuda/lib64/stubs/libcuda.so /lib/libcuda.so.1
+RUN ln -s /incubator-mxnet/lib/libmklml_intel.so /lib/libmklml_intel.so && \
+	ln -s /incubator-mxnet/lib/libiomp5.so /lib/libiomp5.so && \
+	ln -s /incubator-mxnet/lib/libmklml_gnu.so /lib/libmklml_gnu.so && \
+	ln -s /incubator-mxnet/lib/libmkldnn.so /lib/libmkldnn.so && \
+	ln -s /incubator-mxnet/lib/libmkldnn.so.0 /lib/libmkldnn.so.0 && \
+	ln -s /usr/local/cuda/lib64/stubs/libcuda.so /lib/libcuda.so.1
 
 RUN cd incubator-mxnet && make rpkg
 
@@ -83,10 +82,10 @@ RUN apt-get install -y libapache2-mod-r-base && \
 	dpkg -i /home/builder/opencpu-lib_*.deb && \
 	dpkg -i /home/builder/opencpu-server_*.deb
 
-RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log && \
+RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log && \#
 	ln -sf /proc/self/fd/1 /var/log/apache2/error.log && \
-	ln -sf /proc/self/fd/1 /var/log/opencpu/apache_access.log && \
-	ln -sf /proc/self/fd/1 /var/log/opencpu/apache_error.log
+#	ln -sf /proc/self/fd/1 /var/log/opencpu/apache_access.log && \
+#	ln -sf /proc/self/fd/1 /var/log/opencpu/apache_error.log
 
 # Set opencpu password so that we can login
 RUN echo "opencpu:opencpu" | chpasswd
@@ -97,6 +96,7 @@ RUN echo "opencpu:opencpu" | chpasswd
 # R packages
 RUN R -e "install.packages(c('devtools', 'plotly', 'lubridate', 'DT', 'AUC', 'formatR'), repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('data.table', type = 'source', repos = 'http://Rdatatable.github.io/data.table')"
+#RUN R -e "devtools::install_github('jeremiedb/PredictionEngine')"
 
 EXPOSE 80
 EXPOSE 443

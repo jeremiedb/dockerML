@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y \
 	apache2 apache2-dev libapreq2-dev libapparmor-dev apparmor-profiles \
 	libprotobuf-dev protobuf-compiler xvfb language-pack-en-base \
 	xvfb xauth xfonts-base libxml2-dev libxt-dev nano \
-	libicu-dev pkg-config libssh2-1-dev locales apt-utils wget
+	libicu-dev pkg-config libssh2-1-dev locales apt-utils wget texinfo
 
 RUN apt-get update && apt-get install -y \
 	libgeos-dev libgdal-dev libproj-dev \
@@ -39,13 +39,13 @@ RUN apt-get install -y libjemalloc-dev google-perftools
 
 RUN git clone --recursive https://github.com/apache/incubator-mxnet && \
 	cd incubator-mxnet && \
-	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_MKLDNN=1
+	make -j $(nproc) USE_OPENCV=1 USE_BLAS=openblas USE_MKLDNN=0
 
-RUN ln -s /incubator-mxnet/lib/libmklml_intel.so /lib/libmklml_intel.so && \
-	ln -s /incubator-mxnet/lib/libiomp5.so /lib/libiomp5.so && \
-	ln -s /incubator-mxnet/lib/libmklml_gnu.so /lib/libmklml_gnu.so && \
-	ln -s /incubator-mxnet/lib/libmkldnn.so /lib/libmkldnn.so && \
-	ln -s /incubator-mxnet/lib/libmkldnn.so.0 /lib/libmkldnn.so.0
+#RUN ln -s /incubator-mxnet/lib/libmklml_intel.so /lib/libmklml_intel.so && \
+#	ln -s /incubator-mxnet/lib/libiomp5.so /lib/libiomp5.so && \
+#	ln -s /incubator-mxnet/lib/libmklml_gnu.so /lib/libmklml_gnu.so && \
+#	ln -s /incubator-mxnet/lib/libmkldnn.so /lib/libmkldnn.so && \
+#	ln -s /incubator-mxnet/lib/libmkldnn.so.0 /lib/libmkldnn.so.0
 
 RUN cd incubator-mxnet && make rpkg
 
@@ -95,7 +95,7 @@ COPY server.conf /etc/opencpu/server.conf
 # R packages
 RUN R -e "install.packages(c('devtools', 'plotly', 'lubridate', 'DT', 'AUC', 'formatR'), repos='http://cran.rstudio.com/')"
 RUN R -e "install.packages('data.table', type = 'source', repos = 'http://Rdatatable.github.io/data.table')"
-RUN R -e "devtools::install_github('jeremiedb/PredictionEngine')"
+#RUN R -e "devtools::install_github('jeremiedb/PredictionEngine')"
 
 EXPOSE 80
 EXPOSE 443
